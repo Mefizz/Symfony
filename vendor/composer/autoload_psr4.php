@@ -8,7 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-factory/src', $vendorDir . '/psr/http-message/src'),
     'LibDNS\\' => array($vendorDir . '/daverandom/libdns/src'),
-    'League\\Uri\\' => array($vendorDir . '/league/uri-parser/src', $vendorDir . '/league/uri', $vendorDir . '/league/uri-interfaces'),
+    'League\\Uri\\' => array($vendorDir . '/league/uri', $vendorDir . '/league/uri-interfaces', $vendorDir . '/league/uri-parser/src'),
     'Kelunik\\Certificate\\' => array($vendorDir . '/kelunik/certificate/src'),
     'Amp\\WindowsRegistry\\' => array($vendorDir . '/amphp/windows-registry/lib'),
     'Amp\\Sync\\' => array($vendorDir . '/amphp/sync/src'),
