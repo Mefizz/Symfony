@@ -1,0 +1,5 @@
+{
+    "require": {
+        "symfony/amphp-http-client-meta": "^1.0"
+    }
+}
