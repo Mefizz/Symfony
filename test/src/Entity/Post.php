@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
+#[ORM\Table(name: 'posts')]
 class Post
 {
     #[ORM\Id]
@@ -21,18 +22,19 @@ class Post
     #[ORM\Column(length: 255)]
     private string $content;
 
-    #[ORM\ManyToOne(inversedBy: 'posts')]
-    private ?User $user_id = null;
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'posts')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
+    private ?User $user = null;
 
-    /**
-     * @var Collection<int, Tag>
-     */
     #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'posts')]
     #[ORM\JoinTable(name: 'post_tags')]
     private Collection $tags;
 
-    #[ORM\OneToMany(targetEntity: PostTag::class, mappedBy: 'post', orphanRemoval: true)]
-    private PostTag $postTags;
+    #[ORM\Column(type: 'datetime')]
+    private \DateTimeInterface $created_at;
+
+    #[ORM\Column(type: 'datetime')]
+    private \DateTimeInterface $updated_at;
 
     public function __construct()
     {
@@ -47,7 +49,6 @@ class Post
     public function setId(int $id): static
     {
         $this->id = $id;
-
         return $this;
     }
 
@@ -59,7 +60,6 @@ class Post
     public function setTitle(string $title): static
     {
         $this->title = $title;
-
         return $this;
     }
 
@@ -71,19 +71,17 @@ class Post
     public function setContent(string $content): static
     {
         $this->content = $content;
-
         return $this;
     }
 
-    public function getUserId(): ?User
+    public function getUser(): ?User
     {
-        return $this->user_id;
+        return $this->user;
     }
 
-    public function setUserId(?User $user_id): static
+    public function setUser(?User $user): static
     {
-        $this->user_id = $user_id;
-
+        $this->user = $user;
         return $this;
     }
 
@@ -114,13 +112,23 @@ class Post
         return $this;
     }
 
-    public function getPostTags(): PostTag
+    public function getCreatedAt(): \DateTimeInterface
     {
-        return $this->postTags;
+        return $this->created_at;
     }
 
-    public function setPostTags(PostTag $postTags): void
+    public function setCreatedAt(\DateTimeInterface $created_at): void
     {
-        $this->postTags = $postTags;
+        $this->created_at = $created_at;
+    }
+
+    public function getUpdatedAt(): \DateTimeInterface
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updated_at): void
+    {
+        $this->updated_at = $updated_at;
     }
 }

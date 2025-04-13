@@ -6,6 +6,7 @@ use App\Repository\ProfileRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProfileRepository::class)]
+#[ORM\Table(name: 'profiles')]
 class Profile
 {
     #[ORM\Id]
@@ -16,8 +17,10 @@ class Profile
     #[ORM\Column(length: 255)]
     private string $bio;
 
-    #[ORM\OneToOne(inversedBy: 'profile', cascade: ['persist', 'remove'])]
-    private ?User $user_id = null;
+    #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'profile')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
+    private ?User $user = null;
+
 
     public function getId(): int
     {
@@ -43,15 +46,14 @@ class Profile
         return $this;
     }
 
-    public function getUserId(): ?User
+    public function getUser(): ?User
     {
-        return $this->user_id;
+        return $this->user;
     }
 
-    public function setUserId(?User $user_id): static
+    public function setUser(?User $user): self
     {
-        $this->user_id = $user_id;
-
+        $this->user = $user;
         return $this;
     }
 }

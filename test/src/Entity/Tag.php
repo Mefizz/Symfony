@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TagRepository::class)]
+#[ORM\Table(name: 'tags')]
 class Tag
 {
     #[ORM\Id]
@@ -18,20 +19,26 @@ class Tag
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;
 
-    /**
-     * @var Collection<int, Post>
-     */
-    #[ORM\ManyToMany(targetEntity: Post::class, inversedBy: 'tags')]
+    #[ORM\ManyToMany(targetEntity: Post::class, mappedBy: 'tags')]
     private Collection $posts;
 
-    #[ORM\OneToMany(targetEntity: PostTag::class, mappedBy: 'tag', orphanRemoval: true)]
-    private PostTag $postTags;
-
-
+    #[ORM\OneToMany(targetEntity: UserFavoriteTag::class, mappedBy: 'tag', cascade: ['persist', 'remove'])]
+    private Collection $userLinks;
 
     public function __construct()
     {
         $this->posts = new ArrayCollection();
+        $this->userLinks = new ArrayCollection();
+    }
+
+    public function getUserLinks(): Collection
+    {
+        return $this->userLinks;
+    }
+
+    public function getUsersWhoFavorited(): Collection
+    {
+        return $this->userLinks->map(fn(UserFavoriteTag $link) => $link->getUser());
     }
 
     public function getId(): ?int
@@ -58,9 +65,6 @@ class Tag
         return $this;
     }
 
-    /**
-     * @return Collection<int, Post>
-     */
     public function getPosts(): Collection
     {
         return $this->posts;
@@ -80,15 +84,5 @@ class Tag
         $this->posts->removeElement($post);
 
         return $this;
-    }
-
-    public function getPostTags(): PostTag
-    {
-        return $this->postTags;
-    }
-
-    public function setPostTags(PostTag $postTags): void
-    {
-        $this->postTags = $postTags;
     }
 }

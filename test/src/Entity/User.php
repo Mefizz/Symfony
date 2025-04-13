@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: '`user`')]
+#[ORM\Table(name: 'users')]
 class User
 {
     #[ORM\Id]
@@ -31,9 +31,24 @@ class User
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Profile $profile = null;
 
+    #[ORM\OneToMany(targetEntity: UserFavoriteTag::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private Collection $favoriteTagLinks;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
+        $this->favoriteTagLinks = new ArrayCollection();
+    }
+
+
+    public function getFavoriteTagLinks(): Collection
+    {
+        return $this->favoriteTagLinks;
+    }
+
+    public function getFavoriteTags(): Collection
+    {
+        return $this->favoriteTagLinks->map(fn(UserFavoriteTag $link) => $link->getTag());
     }
 
     public function getId(): ?int
@@ -72,9 +87,6 @@ class User
         return $this;
     }
 
-    /**
-     * @return Collection<int, Post>
-     */
     public function getPosts(): Collection
     {
         return $this->posts;
@@ -93,7 +105,6 @@ class User
     public function removePost(Post $post): static
     {
         if ($this->posts->removeElement($post)) {
-            // set the owning side to null (unless already changed)
             if ($post->getUserId() === $this) {
                 $post->setUserId(null);
             }
@@ -109,12 +120,10 @@ class User
 
     public function setProfile(?Profile $profile): static
     {
-        // unset the owning side of the relation if necessary
         if ($profile === null && $this->profile !== null) {
             $this->profile->setUserId(null);
         }
 
-        // set the owning side of the relation if necessary
         if ($profile !== null && $profile->getUserId() !== $this) {
             $profile->setUserId($this);
         }

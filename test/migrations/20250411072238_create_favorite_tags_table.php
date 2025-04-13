@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
-final class CreateUsersTable extends AbstractMigration
+final class CreateFavoriteTagsTable extends AbstractMigration
 {
     /**
      * Change Method.
@@ -19,14 +19,14 @@ final class CreateUsersTable extends AbstractMigration
      */
     public function change(): void
     {
-        $table = $this->table('users', [
-            'id' => 'id',
-            'primary_key' => ['id']
-        ]);
+        $table = $this->table('user_favorite_tags');
         $table
-            ->addColumn('name', 'string')
-            ->addColumn('email', 'string')
+            ->addColumn('user_id', 'integer', ['signed' => false])
+            ->addColumn('tag_id', 'integer', ['signed' => false])
+            ->addColumn('mood', 'string', ['limit' => 50])
             ->addTimestamps()
+            ->addForeignKey('user_id', 'users', 'id', ['delete'=> 'CASCADE'])
+            ->addForeignKey('tag_id', 'tags', 'id', ['delete'=> 'CASCADE'])
             ->create();
     }
 }

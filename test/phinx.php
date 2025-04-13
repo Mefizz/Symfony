@@ -9,7 +9,7 @@ return [
         'default_environment' => 'dev',
         'dev' => [
             'adapter' => 'mysql',
-            'host' => '127.0.0.1',
+            'host' => 'db',
             'name' => 'symfony',
             'user' => 'symfony',
             'pass' => 'symfony',

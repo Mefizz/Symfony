@@ -19,6 +19,7 @@
         "symfony/yaml": "6.4.*"
     },
     "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "*",
         "robmorgan/phinx": "^0.16.6",
         "symfony/maker-bundle": "^1.62"
     },
